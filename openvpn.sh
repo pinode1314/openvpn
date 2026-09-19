@@ -38,28 +38,24 @@ do_uninstall_quiet() {
     systemctl daemon-reload >/dev/null 2>&1
 }
 
-# 1. 安装 OpenVPN 服务端
+# 1. 安装与客户端管理（已安装则直接打开管理菜单）
 do_install() {
+    if [ ! -f "openvpn-install.sh" ]; then
+        wget -O openvpn-install.sh https://git.io/vpn >/dev/null 2>&1
+        chmod +x openvpn-install.sh
+    fi
+
     if check_installed; then
         echo ""
         echo "=================================================="
-        printf "${RED}检测到系统中已经安装了 OpenVPN 服务端！\n${NC}"
-        printf "${RED}如需重新安装，请先选择选项 2 卸载后再试。\n${NC}"
+        printf "${GREEN}OpenVPN 服务端已安装，正在打开管理菜单...${NC}\n"
         echo "=================================================="
-        return
+    else
+        echo "=== 正在下载并运行原版 OpenVPN 安装程序 ==="
     fi
 
-    echo "=== 正在下载原版 OpenVPN 安装脚本 ==="
-    wget -O openvpn-install.sh https://git.io/vpn
-    chmod +x openvpn-install.sh
-
-    # 直接调用原版脚本，保留所有原生菜单和交互
+    # 直接调用原版脚本（未安装时走安装流程，已安装时会自动进入原版管理菜单）
     bash openvpn-install.sh
-
-    echo ""
-    echo "=================================================="
-    printf "${GREEN}OpenVPN 安装完毕！\n${NC}"
-    echo "=================================================="
 }
 
 # 2. 卸载 OpenVPN 服务端
@@ -100,7 +96,7 @@ while true; do
     echo "========================================="
     echo "     OpenVPN 服务端一键管理脚本          "
     echo "========================================="
-    echo " 1. 安装 OpenVPN 服务端"
+    echo " 1. 安装 OpenVPN 服务端与客户端管理"
     echo " 2. 卸载 OpenVPN 服务端"
     echo " 3. 查看 OpenVPN 运行状态与配置"
     echo " 0. 退出脚本"
