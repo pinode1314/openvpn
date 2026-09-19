@@ -38,7 +38,7 @@ do_uninstall_quiet() {
     systemctl daemon-reload >/dev/null 2>&1
 }
 
-# 1. 安装与客户端管理（已安装则直接打开管理菜单）
+# 1. 安装 OpenVPN 服务端与客户端管理
 do_install() {
     if [ ! -f "openvpn-install.sh" ]; then
         wget -O openvpn-install.sh https://git.io/vpn >/dev/null 2>&1
@@ -48,8 +48,11 @@ do_install() {
     if check_installed; then
         echo ""
         echo "=================================================="
-        printf "${GREEN}OpenVPN 服务端已安装，正在打开管理菜单...${NC}\n"
+        printf "${GREEN}✅ 检测到 OpenVPN 服务端已安装！${NC}\n"
+        printf "${GREEN}即将为您打开原版客户端与服务端管理菜单...${NC}\n"
         echo "=================================================="
+        echo ""
+        read -p "请按回车键继续进入管理菜单..."
     else
         echo "=== 正在下载并运行原版 OpenVPN 安装程序 ==="
     fi
